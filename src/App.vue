@@ -6,7 +6,8 @@
     Congratulations :D
   </template>
   <template v-else-if="state.tries.length === 5">
-    You have no more tries :(
+    You have no more tries :( <br>
+    The word was {{ state.word }}
   </template>
   <template v-else>
     <Word :length="5" @submitWord="onSubmitWord"/>
@@ -14,14 +15,14 @@
 </template>
 
 <script setup lang="ts">
-  import { inject, onBeforeMount, reactive } from 'vue';
+  import { onBeforeMount, reactive } from 'vue';
   import Word from './components/WordInput.vue';
   import Try from './components/Try.vue';
   import axios from 'axios';
 
   const state = reactive({
     tries: <string[]>[],
-    word: inject<string>('word'),
+    word: '',
     hasWon: false,
   });
 
@@ -29,7 +30,7 @@
     const response = await axios.get('https://raw.githubusercontent.com/charlesreid1/five-letter-words/master/sgb-words.txt');
     const words = response.data.split('\n');
     state.word = words[Math.ceil(Math.random() * words.length)];
-  })
+  });
 
   function onSubmitWord(word: string) {
     state.tries.push(word);

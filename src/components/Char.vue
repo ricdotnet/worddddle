@@ -1,5 +1,5 @@
 <template>
-  <input ref="char" maxlength="1" :disabled="true" />
+  <input ref="char" maxlength="1"/>
 </template>
 
 <script setup lang="ts">

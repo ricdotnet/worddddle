@@ -15,14 +15,22 @@
   }>();
 
   const state = reactive({
-    chars: new Set(props.word),
+    marked: [0],
   });
 
-  // onBeforeMount(() => {
-  //   props.triedWord.split('').forEach((char: string, index: number) => {
-  //     isPresent(char, index);
-  //   });
-  // });
+  onBeforeMount(() => {
+    const chars: string[] = [];
+
+    // do not question me on this please
+    state.marked.pop();
+
+    props.triedWord.split('').forEach((char: string, index: number) => {
+      if (!chars.includes(char) && props.word.split('').includes(char)) {
+        chars.push(char);
+        state.marked.push(index);
+      }
+    });
+  });
 
 
   function isCorrect(char: string, index: number) {
@@ -30,18 +38,7 @@
   }
 
   function isPresent(char: string, index: number) {
-    const isPresent = !isCorrect(char, index) && props.word.includes(char);
-    if ( !isPresent && !isCorrect(char, index) ) {
-      // should I block?
-    }
-
-    if ( !state.chars.has(char) ) return;
-
-    if ( isPresent ) {
-      state.chars.delete(char);
-    }
-
-    return isPresent;
+    return state.marked.includes(index) && !isCorrect(char, index);
   }
 </script>
 

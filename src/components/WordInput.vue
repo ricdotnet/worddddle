@@ -4,6 +4,7 @@
           class="char"
           :class="{ 'char_current': state.currentChild === n - 1 }"
           :index="state.currentChild"
+          @focus="onFocus"
     />
   </form>
 </template>
@@ -35,8 +36,10 @@
   // addEventListener can be inside an utils file and the cb passed in
   document.addEventListener('keyup', (e) => {
     if ( e.key === 'Enter' && state.currentChild === state.children.length ) {
-      const tryWord = Array.from(word.value.children).reduce((w, i: any) => w + i.value, '');
-      emit('submit-word', <string>tryWord);
+      const tryWord: any = Array.from(word.value.children).reduce((w, i: any) => w + i.value, '');
+      // somehow casting a type shows an error on vscode about not having a closing tag
+      // must be some vue settings
+      emit('submit-word', tryWord);
 
       // reset the word inputs
       state.currentChild = 0;
@@ -48,15 +51,25 @@
     }
     if ( e.key === 'Backspace' && state.currentChild > 0 ) {
       state.currentChild--;
+      state.children[state.currentChild].focus();
       state.children[state.currentChild].value = '';
       return;
     }
     if ( state.currentChild < state.children.length && !state.forbiddenKeys.includes(e.key) ) {
       state.children[state.currentChild].value = e.key.toUpperCase();
       state.currentChild++;
+      if (state.currentChild < state.children.length) {
+        state.children[state.currentChild].focus();
+      }
       return;
     }
   });
+
+  function onFocus() {
+    if (state.currentChild < state.children.length) { 
+      state.children[state.currentChild].focus();
+    }
+  }
 
 </script>
 

@@ -14,7 +14,6 @@
     <template v-else>
       <Word :length="5" @submitWord="onSubmitWord"/>
     </template>
-    {{ state.word }}
   </div>
 </template>
 

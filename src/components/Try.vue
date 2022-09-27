@@ -1,7 +1,7 @@
 <template>
   <div v-for="(char, index) in triedWord" :key="index"
        class="char"
-       :class="{ isCorrect: isCorrect(char, index), isPresent: (state.firstPresent.char === char && state.firstPresent.index === index) }">
+       :class="{ isCorrect: isCorrect(char, index), isPresent: isPresent(char, index) }">
     {{ char }}
   </div>
 </template>
@@ -15,36 +15,30 @@
   }>();
 
   const state = reactive({
-    firstPresent: {
-      char: '',
-      index: -1,
-    },
+    chars: new Set(props.word),
   });
 
-  onBeforeMount(() => {
-    props.triedWord.split('').forEach((char: string, index: number) => {
-      isPresent(char, index);
-    });
-  });
+  // onBeforeMount(() => {
+  //   props.triedWord.split('').forEach((char: string, index: number) => {
+  //     isPresent(char, index);
+  //   });
+  // });
 
 
   function isCorrect(char: string, index: number) {
-    return char.toLowerCase() === props.word.charAt(index).toLowerCase();
+    return char === props.word.charAt(index);
   }
 
   function isPresent(char: string, index: number) {
-    const isPresent = !isCorrect(char, index) && props.word.includes(char.toLowerCase());
+    const isPresent = !isCorrect(char, index) && props.word.includes(char);
     if ( !isPresent && !isCorrect(char, index) ) {
       // should I block?
     }
 
-    if ( state.firstPresent.char !== '' ) return;
+    if ( !state.chars.has(char) ) return;
 
     if ( isPresent ) {
-      state.firstPresent = {
-        char: char,
-        index: index,
-      };
+      state.chars.delete(char);
     }
 
     return isPresent;

@@ -15,6 +15,7 @@
       <Word :length="5" @submitWord="onSubmitWord"/>
     </template>
   </div>
+  <Keyboard/>
 </template>
 
 <script setup lang="ts">
@@ -22,6 +23,7 @@
   import Word from './components/WordInput.vue';
   import Try from './components/Try.vue';
   import axios from 'axios';
+  import Keyboard from './components/Keyboard.vue';
 
   const state = reactive({
     tries: <string[]>[],

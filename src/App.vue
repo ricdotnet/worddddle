@@ -12,18 +12,26 @@
       The word was {{ state.word }}
     </template>
     <template v-else>
-      <Word :length="5" @submitWord="onSubmitWord"/>
+      <WordInput ref="wordInput" :length="5" @submitWord="onSubmitWord"/>
     </template>
   </div>
-  <Keyboard/>
+  <Keyboard @key-press="onKeyPress"/>
 </template>
 
 <script setup lang="ts">
-  import { onBeforeMount, reactive } from 'vue';
-  import Word from './components/WordInput.vue';
-  import Try from './components/Try.vue';
+  import { onBeforeMount, reactive, ref } from 'vue';
   import axios from 'axios';
+  import WordInput from './components/WordInput.vue';
+  import Try from './components/Try.vue';
   import Keyboard from './components/Keyboard.vue';
+
+  interface IWordInput {
+    addNextChar: (key: string) => void;
+    clearPreviousChar: () => void;
+    submitWord: () => void;
+  }
+
+  const wordInput = ref<IWordInput>();
 
   const state = reactive({
     tries: <string[]>[],
@@ -42,6 +50,20 @@
     if ( word === state.word!.toUpperCase() ) {
       state.hasWon = true;
     }
+  }
+
+  function onKeyPress(key: string) {
+    if (key === 'Enter') {
+      wordInput.value?.submitWord();
+      return;
+    }
+
+    if (key === 'Backspace') {
+      wordInput.value?.clearPreviousChar();
+      return;
+    }
+
+    wordInput.value?.addNextChar(key);
   }
 </script>
 

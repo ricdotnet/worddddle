@@ -1,5 +1,5 @@
 <template>
-  <div class="keyboard">
+  <div class="keyboard" @click="onKeyBoardClick">
     <div class="keyboard-row">
       <div class="key" data-key="Q">Q</div>
       <div class="key" data-key="W">W</div>
@@ -38,14 +38,18 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted } from 'vue';
+  const emit = defineEmits<{
+    (event: 'key-press', key: string): void;
+  }>();
 
-  onMounted(() => {
-    const keys = document.querySelectorAll('[data-key]');
-    keys.forEach((k: any) => {
-      console.log(typeof k);
-    });
-  });
+  function onKeyBoardClick(e: Event) {
+    if ( e.target ) {
+      // @ts-ignore
+      const key = e.target.getAttribute('data-key');
+      if (!key) return;
+      emit('key-press', key);
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -59,7 +63,8 @@
     transform: translateX(-50%);
 
     .keyboard-row {
-        display: flex;
+      display: flex;
+
       &:not(:last-child) {
         margin-bottom: 10px;
       }
@@ -67,10 +72,11 @@
       .key {
         width: 2rem;
         padding: 10px 0;
-        background-color: #5f5f5f;
+        background-color: #4f4f4f;
         border-radius: 0.5rem;
         text-align: center;
         cursor: pointer;
+        font-weight: bold;
 
         &:not(:last-child) {
           margin-right: 5px;

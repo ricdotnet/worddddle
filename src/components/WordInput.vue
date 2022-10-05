@@ -4,7 +4,7 @@
           class="char"
           :class="{ 'char_current': state.currentChild === n - 1 }"
           :index="state.currentChild"
-          @focus="onFocus"
+          disabled="true"
     />
   </form>
 </template>
@@ -32,45 +32,32 @@
     forbiddenKeys: ['Backspace', 'Enter', 'Meta', 'Escape', 'Shift', 'Meta', 'Control', 'Alt']
   });
 
-  // TODO: this can be abstracted
-  // addEventListener can be inside an utils file and the cb passed in
-  document.addEventListener('keyup', (e) => {
-    if ( e.key === 'Enter' && state.currentChild === state.children.length ) {
-      const tryWord: any = Array.from(word.value.children).reduce((w, i: any) => w + i.value, '');
-      // somehow casting a type shows an error on vscode about not having a closing tag
-      // must be some vue settings
-      emit('submit-word', tryWord);
-
-      // reset the word inputs
-      state.currentChild = 0;
-      Array.from(state.children).forEach((c: any) => {
-        c.value = '';
-      });
-
-      return;
-    }
-    if ( e.key === 'Backspace' && state.currentChild > 0 ) {
-      state.currentChild--;
-      state.children[state.currentChild].focus();
-      state.children[state.currentChild].value = '';
-      return;
-    }
-    if ( state.currentChild < state.children.length && !state.forbiddenKeys.includes(e.key) ) {
-      state.children[state.currentChild].value = e.key.toUpperCase();
+  function addNextChar(key: string) {
+    if ( state.currentChild < state.length ) {
+      state.children[state.currentChild].value = key;
       state.currentChild++;
-      if (state.currentChild < state.children.length) {
-        state.children[state.currentChild].focus();
-      }
-      return;
-    }
-  });
-
-  function onFocus() {
-    if (state.currentChild < state.children.length) { 
-      state.children[state.currentChild].focus();
     }
   }
 
+  function clearPreviousChar() {
+    if ( state.currentChild > 0 && state.currentChild <= state.length ) {
+      state.currentChild--;
+      state.children[state.currentChild].value = '';
+    }
+  }
+
+  function submitWord() {
+    const tryWord: string = Array.from(word.value.children).reduce((w: string, i: any) => w + i.value, '');
+    if (tryWord.length < state.length) return;
+    emit('submit-word', tryWord);
+
+    state.currentChild = 0;
+    Array.from(state.children).forEach((c: any) => {
+      c.value = '';
+    });
+  }
+
+  defineExpose({ addNextChar, clearPreviousChar, submitWord });
 </script>
 
 <style scoped lang="scss">

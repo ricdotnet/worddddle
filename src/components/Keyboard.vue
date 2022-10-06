@@ -61,13 +61,11 @@
     bottom: 50px;
     left: 50%;
     transform: translateX(-50%);
+    gap: 0.3em;
 
     .keyboard-row {
       display: flex;
-
-      &:not(:last-child) {
-        margin-bottom: 10px;
-      }
+      gap: 0.3em;
 
       .key {
         width: 2rem;
@@ -77,10 +75,6 @@
         text-align: center;
         cursor: pointer;
         font-weight: bold;
-
-        &:not(:last-child) {
-          margin-right: 5px;
-        }
       }
 
       .function {

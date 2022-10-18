@@ -47,7 +47,7 @@
   }
 
   function submitWord() {
-    const tryWord: string = Array.from(word.value.children).reduce((w: string, i: any) => w + i.value, '');
+    const tryWord: string = Array.from(word.value.children).reduce((w: string, i: any) => w + i.value, '') as string;
     if (tryWord.length < state.length) return;
     emit('submit-word', tryWord);
 

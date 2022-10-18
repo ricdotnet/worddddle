@@ -38,6 +38,7 @@
   }
 
   function isPresent(char: string, index: number) {
+    if (isCorrect(char, index)) return;
     return state.marked.includes(index) && !isCorrect(char, index);
   }
 </script>

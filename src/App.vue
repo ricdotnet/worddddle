@@ -15,7 +15,7 @@
       <WordInput ref="wordInput" :length="5" @submitWord="onSubmitWord"/>
     </template>
   </div>
-  <Keyboard @key-press="onKeyPress"/>
+  <Keyboard @key-press="onKeyPress" :used="state.used"/>
 </template>
 
 <script setup lang="ts">
@@ -37,6 +37,7 @@
     tries: <string[]>[],
     word: '',
     hasWon: false,
+    used: <string[]>[],
   });
 
   onBeforeMount(async () => {
@@ -47,18 +48,21 @@
 
   function onSubmitWord(word: string) {
     state.tries.push(word);
+
+    state.used = [...state.used, ...[...word].filter(c => !state.word.includes(c))];
+
     if ( word === state.word!.toUpperCase() ) {
       state.hasWon = true;
     }
   }
 
   function onKeyPress(key: string) {
-    if (key === 'Enter') {
+    if ( key === 'Enter' ) {
       wordInput.value?.submitWord();
       return;
     }
 
-    if (key === 'Backspace') {
+    if ( key === 'Backspace' ) {
       wordInput.value?.clearPreviousChar();
       return;
     }

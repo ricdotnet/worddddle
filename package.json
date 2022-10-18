@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@idevelopthings/vue-class-stores": "^1.0.3",
     "axios": "^0.27.2",
     "fs-jetpack": "^5.0.0",
     "vue": "^3.2.41"
